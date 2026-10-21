@@ -1,0 +1,77 @@
+/* ide/src/index.css */
+@import "tailwindcss";
+
+:root {
+  /* Official Ethan Schoonover Solarized Light Palette */
+  --sol-base3: #fdf6e3;
+  /* Main background */
+  --sol-base2: #eee8d5;
+  /* Secondary background (Sidebar, Tabs, Headers) */
+  --sol-base1: #93a1a1;
+  /* Muted / Comments / Line numbers */
+  --sol-base0: #839496;
+  /* Secondary text */
+  --sol-base00: #657b83;
+  /* Primary text & code */
+  --sol-base01: #586e75;
+  /* Emphasized text & headings */
+  --sol-border: #dfd8c2;
+  /* Crisp 1px structural hairline between base3 & base2 */
+
+  /* Official Solarized Accents */
+  --sol-yellow: #b58900;
+  --sol-orange: #cb4b16;
+  --sol-red: #dc322f;
+  --sol-magenta: #d33682;
+  --sol-violet: #6c71c4;
+  --sol-blue: #268bd2;
+  --sol-cyan: #2aa198;
+  --sol-green: #859900;
+}
+
+@theme {
+  --font-sans: 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+  --font-mono: 'IBM Plex Sans Arabic', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--sol-base3);
+    color: var(--sol-base00);
+    overflow: hidden;
+    color-scheme: light;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(147, 161, 161, 0.45) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(147, 161, 161, 0.45);
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(101, 123, 131, 0.7);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
