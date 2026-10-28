@@ -18,13 +18,21 @@ import { FileSidebar } from "./components/FileSidebar";
 import { CsvGridEditor } from "./components/CsvGridEditor";
 import { OutputWorkbench } from "./components/OutputWorkbench";
 
-const STORAGE_KEY = "sadscript_vfs_v1";
+const STORAGE_KEY = "sadscript_vfs_v4";
 
 export default function App() {
   const [files, setFiles] = useState<VirtualFile[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : INITIAL_FILES;
+      if (!saved) return INITIAL_FILES;
+
+      const parsed: VirtualFile[] = JSON.parse(saved);
+      // Always keep custom user files, but sync INITIAL_FILES from examples.ts
+      const initialNames = new Set(INITIAL_FILES.map((f) => f.name));
+      const customFiles = parsed.filter(
+        (f) => !initialNames.has(f.name) && !f.name.endsWith(".edu"),
+      );
+      return [...INITIAL_FILES, ...customFiles];
     } catch {
       return INITIAL_FILES;
     }

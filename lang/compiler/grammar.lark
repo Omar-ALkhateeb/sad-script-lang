@@ -1,0 +1,139 @@
+// lang/compiler/grammar.lark
+start: _NL? (stmt (_NL stmt)* _NL?)?
+
+block: "{" _NL? (stmt (_NL stmt)* _NL?)? "}"
+
+?stmt: var_assign
+     | aug_assign
+     | global_stmt
+     | if_stmt
+     | repeat_stmt
+     | for_range_stmt
+     | for_each_stmt
+     | while_stmt
+     | func_def
+     | class_def
+     | import_stmt
+     | return_stmt
+     | break_stmt
+     | continue_stmt
+     | try_stmt
+     | expr_stmt
+
+var_assign: lvalue "=" expr
+aug_assign: lvalue AUG_OP expr
+global_stmt: _KW_GLOBAL CNAME (_COMMA CNAME)*
+AUG_OP: "+=" | "-=" | "*=" | "/="
+
+?lvalue: CNAME                  -> lval_var
+       | atom "[" expr "]"      -> lval_index
+       | atom "." CNAME         -> lval_attr
+
+if_stmt: _KW_IF expr block elif_clause* [else_clause]
+elif_clause: _KW_ELIF expr block
+else_clause: _KW_ELSE block
+
+repeat_stmt: _KW_REPEAT expr _KW_TIMES? block
+for_range_stmt: _KW_FOR CNAME _KW_FROM expr _KW_TO expr block
+for_each_stmt: _KW_FOR CNAME _KW_IN expr block
+while_stmt: _KW_WHILE expr block
+
+func_def: _KW_FUNC CNAME "(" [params] ")" block
+params: CNAME (_COMMA CNAME)*
+
+class_def: _KW_CLASS CNAME "{" _NL? (class_member (_NL class_member)* _NL?)? "}"
+?class_member: method_def | var_assign
+method_def: _KW_FUNC CNAME "(" [params] ")" block
+
+import_stmt: _KW_IMPORT (CNAME | STRING)                       -> import_module
+           | _KW_FROM (CNAME | STRING) _KW_IMPORT import_names -> import_from
+import_names: CNAME (_COMMA CNAME)*
+
+return_stmt: _KW_RETURN [expr]
+break_stmt: _KW_BREAK
+continue_stmt: _KW_CONTINUE
+try_stmt: _KW_TRY block _KW_CATCH CNAME block
+expr_stmt: expr
+
+?expr: or_expr
+?or_expr: and_expr (_KW_OR and_expr)*
+?and_expr: not_expr (_KW_AND not_expr)*
+?not_expr: _KW_NOT not_expr -> not_op
+         | comparison
+
+?comparison: sum (comp_op sum)*
+comp_op: COMP_SYM
+       | _KW_IN            -> comp_in
+       | _KW_NOT _KW_IN    -> comp_not_in
+COMP_SYM: "==" | "!=" | ">=" | "<=" | ">" | "<"
+
+?sum: product (SUM_OP product)*
+SUM_OP: "+" | "-"
+
+?product: unary (PROD_OP unary)*
+PROD_OP: "*" | "/" | "//" | "%"
+
+?unary: "-" unary -> neg
+      | "+" unary -> pos
+      | power
+
+?power: atom ("**" unary)?
+
+?atom: NUMBER                       -> number_lit
+     | STRING                       -> string_lit
+     | BOOL_TRUE                    -> true_lit
+     | BOOL_FALSE                   -> false_lit
+     | NONE_LIT                     -> none_lit
+     | CNAME                        -> var_ref
+     | "[" [expr_list] "]"          -> list_lit
+     | "{" [dict_items] "}"         -> dict_lit
+     | atom "(" [arg_list] ")"      -> func_call
+     | atom "[" expr "]"            -> index_access
+     | atom "." CNAME               -> attr_access
+     | "(" expr ")"                 -> paren
+
+expr_list: expr (_COMMA expr)* _COMMA?
+dict_items: dict_pair (_COMMA dict_pair)* _COMMA?
+dict_pair: expr ":" expr
+
+arg_list: arg_item (_COMMA arg_item)* _COMMA?
+?arg_item: CNAME "=" expr           -> kwarg
+         | expr
+
+// --- KEYWORDS WITH EXPLICIT PRIORITY (Always beat CNAME.1) ---
+_KW_ELIF.3: /و[اأإ]لا(?:[ \t]+|_)[اأإ]ذ[ا]?/ | "elif"
+_KW_IF.2: "اذا" | "إذ" | "إذا" | "if"
+_KW_ELSE.2: "والا" | "وإلا" | "else"
+_KW_REPEAT.2: "كرر" | "repeat"
+_KW_TIMES.2: "مرات" | "مرة" | "مره" | "times"
+_KW_FOR.2: "لكل" | "for"
+_KW_FROM.2: "من" | "from"
+_KW_TO.2: "الى" | "إلى" | "to"
+_KW_IN.2: "في" | "in"
+_KW_WHILE.2: "طالما" | "while"
+_KW_FUNC.2: "دالة" | "داله" | "function" | "def"
+_KW_CLASS.2: "صنف" | "فئة" | "هيكل" | "class"
+_KW_IMPORT.2: "استورد" | "إستورد" | "import"
+_KW_GLOBAL.2: "عام" | "global"
+_KW_RETURN.2: "ارجع" | "أرجع" | "إرجع" | "return"
+_KW_BREAK.2: "توقف" | "اكسر" | "إكسر" | "break"
+_KW_CONTINUE.2: "استمر" | "إستمر" | "اكمل" | "أكمل" | "continue"
+_KW_TRY.2: "حاول" | "try"
+_KW_CATCH.2: "التقط" | "إلتقط" | "امسك" | "أمسك" | "except" | "catch"
+
+_KW_AND.2: "و" | "and"
+_KW_OR.2: "او" | "أو" | "or"
+_KW_NOT.2: "ليس" | "not"
+
+BOOL_TRUE.2: "صح" | "صحيح" | "true" | "True"
+BOOL_FALSE.2: "خطأ" | "خطا" | "false" | "False"
+NONE_LIT.2: "فارغ" | "عدم" | "لا_شيء" | "None" | "null"
+
+_COMMA: "," | "،"
+CNAME.1: /[a-zA-Z_\u0621-\u064A\u0671-\u06D3][a-zA-Z0-9_\u0621-\u064A\u0660-\u0669\u0671-\u06D3]*/
+NUMBER.2: /[0-9\u0660-\u0669]+(\.[0-9\u0660-\u0669]+)?/
+STRING.2: /"[^"]*"|'[^']*'/
+
+_NL: /(\r?\n[ \t]*)+/
+
+%ignore /[ \t\f]+/

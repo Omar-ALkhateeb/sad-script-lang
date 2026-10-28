@@ -1,151 +1,285 @@
+# ⟦ صـادسكربت ⟧ — SadScript
+
 ```text
-╭──────────────────────────────────────────────────────────────────────────╮
-│   ____            _ ____            _       _                            │
-│  / ___|  __ _  __| / ___|  ___ _ __(_)_ __ | |_                          │
-│  \___ \ / _` |/ _` \___ \ / __| '__| | '_ \| __|                         │
-│   ___) | (_| | (_| |___) | (__| |  | | |_) | |_     ⟦ صـادسكربت ⟧        │
-│  |____/ \__,_|\__,_|____/ \___|_|  |_| .__/ \__|    SadScript v1.0.0     │
-│                                      |_|                                 │
-├──────────────────────────────────────────────────────────────────────────┤
-│  An Arabic-First Programming & Data Science Language + WebAssembly IDE   │
-╰──────────────────────────────────────────────────────────────────────────╯
+  ╭───────────────────────────────────────────────────────────────────────╮
+  │     ____            _ ____            _       _                       │
+  │    / ___|  __ _  __| / ___|  ___ _ __(_)_ __ | |_    ⟦ صـادسكربت ⟧    │
+  │    \___ \ / _` |/ _` \___ \ / __| '__| | '_ \| __|   SadScript v1.0   │
+  │     ___) | (_| | (_| |___) | (__| |  | | |_) | |_    .sad  •  .sd     │
+  │    |____/ \__,_|\__,_|____/ \___|_|  |_| .__/ \__|                    │
+  │                                        |_|                            │
+  ╰───────────────────────────────────────────────────────────────────────╯
 ```
 
-# ⟦ صادسكربت ⟧ — SadScript
-
-**SadScript (`صادسكربت`)** is a modern, Arabic-first programming language and browser-based IDE designed for algorithms, data analysis (**Pandas**), and data visualization (**Matplotlib**). It transpiles to Python and runs 100% client-side in the browser via **WebAssembly (Pyodide)**.
-
-* **File Extensions:** `.sad`, `.sd`, `.صاد`
+**SadScript (صادسكربت)** is an Arabic-first programming language and browser-based data science workbench (`.sad`). Designed with a zero-underscore, single-word Arabic vocabulary, it combines clean object-oriented and procedural syntax with native tabular data (`جدول`), vector columns (`عمود`), and Solarized Light SVG visualization (`رسوم`) running 100% client-side in WebAssembly.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-* **Forgiving Arabic Syntax:** Supports both Arabic-Indic (`٠-٩`) and ASCII (`0-9`) numerals, Arabic (`،`) and English (`,`) commas, and flexible Hamza/Taa-Marbuta spelling (`اذا` / `إذا`, `دالة` / `داله`).
-* **First-Class Data Science:** Built-in Arabic wrappers for **Pandas** DataFrames (`اقرأ_جدول`, `حذف_الفارغ`, `رتب_قيم`) and one-line **Matplotlib** SVG charts (`ارسم_أعمدة`, `ارسم_خط`, `ارسم_دائري`).
-* **Smart Diagnostics & Quick-Fix:** Static semantic analysis + runtime inspection that catches errors in Arabic and suggests one-click typo fixes for variable and DataFrame column names.
-* **Zero-Setup Browser IDE:** Built with React, TypeScript, Tailwind CSS (Solarized Light theme), CodeMirror 6 (with RTL BiDi operator isolation), and a background Pyodide Web Worker.
+- **Zero-Underscore Single-Word Vocabulary:** Uses concise, natural Arabic roots (`عدد` for `int`, `كسر` for `float`, `نص` for `str`, `منطق` for `bool`, `جدول` for `table`, and space-separated `والا اذا` for `elif`) so developers never have to reach for underscores on an Arabic keyboard.
+- **First-Class Tabular Data & Charts:** Read CSVs (`اقرأ`), clean missing rows (`نظف`), filter (`صفي`), group (`تجميع`), sort (`رتب`), and plot responsive SVG charts (`أعمدة`, `خط`, `نقاط`, `دائري`) in one line without exposing underlying Python/Pandas internals.
+- **Native String Interpolation & Dot-Access Dictionaries:** Embed variables directly inside strings (`"المعدل: {معدل}"`) and access dictionary keys via dot notation (`طالب.الاسم` or `طالب["الاسم"]`).
+- **Object-Oriented Classes with Auto-`هذا`:** Define classes (`صنف`) and constructors (`انشئ`) where `هذا` (`self`) is bound automatically without boilerplate parameter declarations.
+- **Zero-Install WebAssembly IDE:** Features a Solarized Light VS Code-style workbench with RTL BiDi operator isolation, dot-aware IntelliSense, virtual file/folder tree, interactive CSV editor, live variable inspector, and 1-click auto-fix diagnostics.
 
 ---
 
-## ⚡ Quick Examples
+## Quick Examples
 
-### 1. FizzBuzz (`fizzbuzz.sad`)
+### 1. Data Science & Visualization in 6 Lines
+
 ```text
-دالة فيز_باز(الحد) {
-    لكل رقم من ١ الى الحد {
-        اذا رقم % ٣ == ٠ و رقم % ٥ == ٠ {
-            اطبع("فيز باز")
-        } والا_اذا رقم % ٣ == ٠ {
-            اطبع("فيز")
-        } والا_اذا رقم % ٥ == ٠ {
-            اطبع("باز")
-        } والا {
-            اطبع(رقم)
-        }
+// Load CSV into a native Table (جدول)
+طلاب = اقرأ("students.csv")
+
+// Vectorized column arithmetic (supports Eastern ٠-٩ and Western 0-9 digits)
+طلاب["المعدل"] = (طلاب["الرياضيات"] + طلاب["العلوم"]) / ٢
+
+// Clean missing rows, sort descending, and take top 3
+متفوقون = طلاب.نظف().رتب("المعدل"، تصاعدي=خطأ).أول(٣)
+اطبع(متفوقون)
+
+// String interpolation with {variable}
+معدل = قرب(متوسط(طلاب["المعدل"])، ٢)
+اطبع("المعدل العام للصف: {معدل}")
+
+// Render a Solarized Light SVG bar chart
+طلاب.أعمدة("الاسم"، "المعدل"، العنوان="معدلات الطلاب النهائية")
+```
+
+### 2. Control Flow (`اذا` / `والا اذا` / `والا` & Loops)
+
+```text
+لكل ن من ١ الى ١٥ {
+    اذا ن % ١٥ == ٠ {
+        اطبع("فيز باز (FizzBuzz)")
+    } والا اذا ن % ٣ == ٠ {
+        اطبع("فيز (Fizz)")
+    } والا اذا ن % ٥ == ٠ {
+        اطبع("باز (Buzz)")
+    } والا {
+        اطبع(ن)
+    }
+}
+```
+
+### 3. Classes (`صنف`) & Standard Library Modules (`استورد`)
+
+```text
+استورد رياضيات
+استورد عشوائيات
+
+صنف دائرة {
+    دالة انشئ(نق) {
+        هذا.نق = نق
+    }
+
+    دالة مساحة() {
+        ارجع قرب(رياضيات.ط * رياضيات.قوة(هذا.نق، ٢)، ٢)
     }
 }
 
-فيز_باز(١٥)
+د = دائرة(٥)
+اطبع("مساحة الدائرة = {د.مساحة()} (النوع: {نوع(د.مساحة())})")
+اطبع("رقم عشوائي: {عشوائيات.عدد(١، ١٠٠)}")
 ```
 
-### 2. Data Analysis & Plotting (`main.sad`)
+### 4. Multi-File Imports & Dictionaries with Dot-Access
+
 ```text
-// 1. Read CSV into a Pandas DataFrame
-جدول = اقرأ_جدول("students.csv")
+// Import another .sad file from the workspace or fetch JSON over HTTP
+من "أدوات.sad" استورد دائرة
+استورد طلبات
 
-// 2. Compute a new column
-جدول["المعدل"] = (جدول["الرياضيات"] + جدول["العلوم"]) / ٢
-
-// 3. Clean, sort, and display top 3 rows
-أفضل_الطلاب = جدول.حذف_الفارغ().رتب_قيم(حسب="المعدل"، تصاعدي=خطأ).أول(٣)
-اطبع(أفضل_الطلاب)
-
-// 4. Generate an SVG bar chart in one line
-جدول.ارسم_أعمدة("الاسم"، "المعدل"، العنوان="معدلات الطلاب النهائية")
+طالب = {"الاسم": "سارة"، "الدرجة": ٩٨}
+اطبع("الطالبة {طالب.الاسم} حصلت على {طالب.الدرجة}")
 ```
 
 ---
 
-## 📖 Syntax & Built-ins Cheat Sheet
+## Complete Language Reference
 
-### Control Flow & Keywords
-| SadScript (Arabic) | Python Equivalent | Example |
-| :--- | :--- | :--- |
-| `اذا` / `والا_اذا` / `والا` | `if` / `elif` / `else` | `اذا س > ٥ { ... } والا { ... }` |
-| `لكل ... من ... الى ...` | `for i in range(a, b+1)` | `لكل ع من ١ الى ١٠ { ... }` |
-| `لكل ... في ...` | `for item in list` | `لكل عنصر في قائمة { ... }` |
-| `كرر ... مرات` | `for _ in range(n)` | `كرر ٣ مرات { ... }` |
-| `طالما` | `while` | `طالما س > ٠ { ... }` |
-| `دالة` / `ارجع` | `def` / `return` | `دالة جمع(أ، ب) { ارجع أ + ب }` |
-| `حاول` / `التقط` | `try` / `except` | `حاول { ... } التقط خطأ { ... }` |
-| `و` / `او` / `ليس` | `and` / `or` / `not` | `اذا س > ٠ و س < ١٠ { ... }` |
-| `صحيح` / `خطأ` / `فارغ` | `True` / `False` / `None` | `نشط = صحيح` |
+### 1. Core Types (Single-Word Primitives)
 
-### Core Built-in Functions
-| SadScript Function | Description |
-| :--- | :--- |
-| `اطبع(قيمة)` | Print values or formatted RTL DataFrames to the console |
-| `ادخل(رسالة)` | Read user input (`input()`) |
-| `طول(س)` / `مجموع(س)` / `متوسط(س)` | Length (`len`), Sum (`sum`), Mean (`mean`) |
-| `أكبر(س)` / `أصغر(س)` / `قرب(س، ن)` | Max (`max`), Min (`min`), Round (`round`) |
-| `رتب(قائمة)` / `بدل(قائمة، أ، ب)` | Sort list (`sorted`) / Swap two elements in-place |
-| `نص(س)` / `عدد_صحيح(س)` / `عدد_عشري(س)` | Cast to `str`, `int`, `float` |
+| Type Name              | Equivalent             | Constructor / Conversion         | Literal Examples                 |
+| :--------------------- | :--------------------- | :------------------------------- | :------------------------------- |
+| **`عدد`**              | Integer (`int`)        | `عدد("٤٢")`                      | `٤٢`, `100`, `-٥`                |
+| **`كسر`**              | Float (`float`)        | `كسر("٣.١٤")`                    | `٣.١٤`, `95.5`                   |
+| **`نص`**               | String (`str`)         | `نص(١٠٠)`                        | `"مرحباً {الاسم}"`               |
+| **`منطق`**             | Boolean (`bool`)       | `منطق(١)`                        | `صح` (`صحيح`), `خطأ`             |
+| **`قائمة`**            | List (`list`)          | `قائمة()`                        | `[١٠، ٢٠، ٣٠]`                   |
+| **`قاموس`**            | Dictionary (`dict`)    | `قاموس()`                        | `{"الاسم": "أحمد"، "العمر": ٢٠}` |
+| **`جدول`**             | Data Table (`Table`)   | `جدول(بيانات)` / `اقرأ("f.csv")` | Tabular dataset                  |
+| **`عمود`**             | Data Column (`Column`) | `عمود([١، ٢، ٣])`                | `طلاب["الرياضيات"]`              |
+| **`فارغ`** / **`عدم`** | Null (`None`)          | —                                | `فارغ` / `عدم`                   |
 
-### Data Science (Pandas & Charts)
-| SadScript Method | Equivalent | Description |
-| :--- | :--- | :--- |
-| `اقرأ_جدول("file.csv")` | `pd.read_csv()` | Load a CSV file into a DataFrame |
-| `احفظ_جدول(جدول، "out.csv")` | `df.to_csv()` | Save DataFrame to a CSV file |
-| `جدول.أول(ن)` / `جدول.آخر(ن)` | `df.head(n)` / `df.tail(n)` | First or last $n$ rows |
-| `جدول.ملخص()` | `df.describe()` | Summary statistics |
-| `جدول.حذف_الفارغ()` / `جدول.املأ_الفارغ(٠)` | `df.dropna()` / `df.fillna(0)` | Handle missing values |
-| `جدول.رتب_قيم(حسب="...", تصاعدي=خطأ)` | `df.sort_values()` | Sort rows by column |
-| `جدول.ارسم_أعمدة(س، ص، العنوان="...")` | `plt.bar()` | Render a bar chart |
-| `جدول.ارسم_خط(س، ص، العنوان="...")` | `plt.plot()` | Render a line chart |
+Use **`نوع(قيمة)`** to inspect the runtime type of any value.
 
 ---
 
-## 🚀 Quick Start (Local Development)
+### 2. Operators & Punctuation
 
-### Run the Web IDE
+- **Punctuation:** Both Arabic comma (`،`) and English comma (`,`) are valid everywhere. Both Eastern Arabic numerals (`٠١٢٣٤٥٦٧٨٩`) and Western numerals (`0123456789`) are supported natively.
+- **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division), `%` (modulo), `**` (exponent), `+=`, `-=`, `*=`, `/=`.
+- **Comparison:** `==`, `!=`, `>`, `<`, `>=`, `<=`.
+- **Logical & Membership:** `و` (`and`), `او` / `أو` (`or`), `ليس` (`not`), `في` (`in`), `ليس في` (`not in`).
+- **Comments:** Single-line comments start with `//` or `#`.
+
+---
+
+### 3. Control Flow & Error Handling
+
+| Construct         | Syntax                                               | Description                                                        |
+| :---------------- | :--------------------------------------------------- | :----------------------------------------------------------------- |
+| **Conditional**   | `اذا شرط { ... } والا اذا شرط٢ { ... } والا { ... }` | Conditional branching (no underscore needed in `والا اذا`)         |
+| **Range Loop**    | `لكل ع من ١ الى ١٠ { ... }`                          | Inclusive range loop (`1` through `10` inclusive)                  |
+| **For-Each Loop** | `لكل عنصر في قائمة { ... }`                          | Iterates over any list, column, or string                          |
+| **Index Loop**    | `لكل ع في فهارس(قائمة) { ... }`                      | Iterates from `0` to `طول(قائمة) - 1`                              |
+| **Repeat Loop**   | `كرر ٥ مرات { ... }`                                 | Repeats a block $N$ times                                          |
+| **While Loop**    | `طالما شرط { ... }`                                  | Loops while condition is true (with automatic infinite-loop guard) |
+| **Loop Control**  | `توقف` / `استمر`                                     | `break` / `continue` inside loops                                  |
+| **Try / Catch**   | `حاول { ... } التقط خطأ { اطبع(خطأ) }`               | Catches runtime errors into variable `خطأ`                         |
+
+---
+
+### 4. Functions (`دالة`) & Classes (`صنف`)
+
+- **Functions:** Variables assigned inside a function are local by default (lexical scoping). Use `عام س` (`global`) to mutate a module-level variable.
+
+```text
+دالة مربع(س) {
+    ارجع س * س
+}
+```
+
+- **Classes:** Define classes with `صنف`. The constructor is named `انشئ` (or `بناء`), and `هذا` refers to the current instance (`self` is injected automatically into all methods).
+
+```text
+صنف مستطيل {
+    دالة انشئ(طول، عرض) {
+        هذا.طول = طول
+        هذا.عرض = عرض
+    }
+    دالة مساحة() {
+        ارجع هذا.طول * هذا.عرض
+    }
+}
+```
+
+---
+
+### 5. Built-in Collection Methods (`قائمة`, `قاموس`, `نص`)
+
+#### List (`قائمة`)
+
+- `ق.أضف(عنصر)` — Appends an item and returns the list (chainable).
+- `ق.أدرج(فهرس، عنصر)` — Inserts an item at index.
+- `ق.احذف(عنصر)` — Removes the first matching value.
+- `ق.اسحب(فهرس=-١)` — Pops and returns the item at index.
+- `ق.رتب(تصاعدي=صح)` — Returns a new sorted `قائمة`.
+- `ق.اعكس()` — Returns a new reversed `قائمة`.
+- `ق.أول(ن)` / `ق.آخر(ن)` — Returns the first/last element (or first/last $N$ elements if $N$ is given).
+- `ق.اربط("، ")` — Joins elements into a `نص`.
+- `ق.يضم(عنصر)` / `ق.عدد(عنصر)` / `ق.طول` — Membership check, count, and length.
+
+#### Dictionary (`قاموس`)
+
+- Supports both bracket access (`ق["مفتاح"]`) and dot access (`ق.مفتاح`).
+- `ق.احصل(مفتاح، افتراضي)` — Safe lookup with default value.
+- `ق.مفاتيح()` / `ق.قيم()` / `ق.عناصر()` — Returns keys, values, or `[key, value]` pairs as a `قائمة`.
+- `ق.احذف(مفتاح)` / `ق.يضم(مفتاح)` / `ق.طول` — Deletes key, checks existence, or returns count.
+
+#### String (`نص`)
+
+- Supports `{متغير}` string interpolation automatically.
+- `ن.قسم(فاصل)` — Splits string into a `قائمة` of strings.
+- `ن.استبدل(قديم، جديد)` — Replaces substrings.
+- `ن.نظف()` — Strips leading and trailing whitespace.
+- `ن.يبدأ(بادئة)` / `ن.ينتهي(لاحقة)` / `ن.يضم(جزء)` / `ن.موقع(جزء)` — String search helpers.
+- `ن.كبير()` / `ن.صغير()` / `ن.حرف(٠)` / `ن.طول` — Case conversion, character indexing, and length.
+
+---
+
+### 6. Data Science Engine (`جدول` & `عمود`)
+
+| Method / Property                                                      | Description                                                               |
+| :--------------------------------------------------------------------- | :------------------------------------------------------------------------ |
+| `اقرأ("file.csv")` / `جداول.اقرأ("file.csv")`                          | Loads a CSV file into a `جدول`                                            |
+| `جدول.احفظ("out.csv")`                                                 | Exports the table to a CSV file                                           |
+| `جدول["العمود"]`                                                       | Returns a vectorized `عمود` supporting `+`, `-`, `*`, `/`, `>`, `<`, `==` |
+| `جدول.نظف()`                                                           | Drops rows containing missing values (`dropna`)                           |
+| `جدول.املأ(٠)`                                                         | Replaces missing values with a fallback value (`fillna`)                  |
+| `جدول.رتب("العمود"، تصاعدي=خطأ)`                                       | Sorts rows by column                                                      |
+| `جدول.صفي(جدول["العمود"] >= ٨٥)`                                       | Filters rows matching a boolean condition                                 |
+| `جدول.تجميع("العمود").متوسط()`                                         | Groups by column and aggregates (`متوسط`, `مجموع`, `عدد`, `أكبر`, `أصغر`) |
+| `جدول.أول(٥)` / `جدول.آخر(٥)`                                          | Returns the first or last $N$ rows                                        |
+| `جدول.ملخص()`                                                          | Generates summary statistics for numerical columns                        |
+| `جدول.صف(٠)`                                                           | Returns row $i$ as a `قاموس`                                              |
+| `جدول.الأعمدة` / `جدول.الشكل` / `جدول.صفوف`                            | Column names list, `[rows, cols]` shape, and row count                    |
+| `عمود.متوسط()` / `مجموع()` / `أكبر()` / `أصغر()` / `وسيط()` / `فريد()` | Column aggregations                                                       |
+
+---
+
+### 7. Charts Engine (`رسوم`) & Standard Library Modules (`استورد`)
+
+Charts can be called directly as global functions, as methods on any `جدول`, or via `استورد رسوم`:
+
+```text
+// Direct method on a Table:
+طلاب.أعمدة("الاسم"، "المعدل"، العنوان="نتائج الطلاب")
+
+// Or via the رسوم module:
+استورد رسوم
+رسوم.أعمدة(فئات، قيم، العنوان="رسم أعمدة")
+رسوم.خط(س، ص، العنوان="رسم خطي")
+رسوم.نقاط(س، ص، العنوان="مخطط تبعثر")
+رسوم.دائري(تسميات، قيم، العنوان="رسم دائري")
+```
+
+#### Built-in Modules (`استورد`)
+
+- **`استورد رياضيات`** — `ط` ($\pi$), `هـ` ($e$), `جذر(س)`, `قوة(أ، ب)`, `مطلق(س)`, `سقف(س)`, `أرضية(س)`, `جا(ز)`, `جتا(ز)`, `ظا(ز)`, `لوغاريتم(س)`.
+- **`استورد عشوائيات`** — `عدد(من، إلى)`, `كسر(من، إلى)`, `اختر(قائمة)`, `اخلط(قائمة)`, `عينة(قائمة، ك)`.
+- **`استورد طلبات`** — `احصل(الرابط)` (returns `استجابة` with `.الحالة`, `.النص`, `.كقاموس()`), `جلب(الرابط)` (fetches JSON directly into a `قاموس` or `قائمة`).
+- **`استورد جداول`** — `اقرأ(ملف)`, `احفظ(جدول، ملف)`, `أنشئ(بيانات)`, `عمود(قيم)`.
+- **Multi-File Imports:** `استورد "ملف_آخر.sad"` or `من "ملف_آخر.sad" استورد دالة_مساعدة`.
+
+---
+
+## Project Architecture
+
+```text
+├── lang/                   # Modular Compiler & Runtime Package
+│   ├── compiler/           # LALR(1) grammar.lark, lexical scopes, checker, emitter, sourcemap
+│   ├── types/              # Core types: Type, String (نص), List (قائمة), Dict (قاموس)
+│   ├── stdlib/             # Standard library: builtins, tables, charts, math, random, http
+│   ├── runtime/            # Sandboxed runner, loop guards, multi-file module loader
+│   ├── diagnostics/        # Arabic syntax & runtime error diagnostics with typo suggestions
+│   └── cli.py              # Command-line runner for .sad files
+└── ide/                    # React + TypeScript + CodeMirror 6 + Pyodide WebAssembly IDE
+```
+
+---
+
+## Running Locally
+
+### 1. Run the Browser IDE
+
 ```bash
 cd ide
 npm install
 npm run dev
 ```
 
-### Run via CLI
+### 2. Run `.sad` Files from the Terminal (CLI)
+
 ```bash
-python3.10 -m lang.cli fizzbuzz.sad --emit-py
+python3.10 -m lang.cli path/to/script.sad
 ```
 
 ---
 
-## 📄 License
+## License
 
-Licensed under the **MIT License**.
-
-```text
-MIT License
-
-Copyright (c) 2026 Omar Nabeel
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+MIT License — Copyright © 2026 Omar Nabeel.
